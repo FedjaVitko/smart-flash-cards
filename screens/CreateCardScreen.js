@@ -6,6 +6,13 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 import TokenizedText from '../components/TokenizedText';
 
+const colorsToImportance = {
+  'white' : 0,
+  'green' : 1,
+  'orange' : 2,
+  'red' : 3
+}
+
 class CreateCardScreen extends Component {
 
     state = {
@@ -55,17 +62,26 @@ class CreateCardScreen extends Component {
       this.setState({ tokenizedAnswer });
     }
 
-    onPress = (token) => { 
-      const { tokenColors, selectedColor } = this.state;
+    onPress = (token) => {
+      const { tokenColors, selectedColor, tokenizedAnswer } = this.state;
 
       let newTokenColors = Object.assign({}, tokenColors);
       newTokenColors[token] = selectedColor;
 
-      this.setState({ tokenColors: newTokenColors });          
+      let newTokenizedAnswer = Object.assign({}, tokenizedAnswer);
+      newTokenizedAnswer[token] = colorsToImportance[selectedColor];
+
+      this.setState({ tokenColors: newTokenColors, tokenizedAnswer: newTokenizedAnswer });          
     }
 
     createCard = () => {
-      console.log(this.state.tokenizedAnswer);
+      const { question, answer, tokenizedAnswer } = this.state;
+      const card = {
+        question,
+        answer,
+        tokenizedAnswer
+      };
+      // TODO: Send the card object via a POST request to the REST API
     }
 
     render() {
@@ -97,7 +113,6 @@ class CreateCardScreen extends Component {
 
                 {this.state.answer.length > 0 && 
                 <Card>
-
                   <CardItem>
                     <Body>
                       <Text>
@@ -139,7 +154,7 @@ class CreateCardScreen extends Component {
                 <Button rounded success onPress={this.createCard} style={styles.createButton}>
                   <Text>Create Card</Text>
                 </Button>
-                
+
               </Form>
             </Content>
           </Container>

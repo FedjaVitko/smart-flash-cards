@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Text, StyleSheet } from 'react-native';
+import React from 'react';
+import { Text } from 'react-native';
 
 const TokenizedText = ({ tokens, onPress, tokenColors }) => (
         tokens.map((token, id) => {
@@ -16,9 +16,3 @@ const TokenizedText = ({ tokens, onPress, tokenColors }) => (
     );
 
 export default TokenizedText;
-
-const styles = StyleSheet.create({
-    text: {
-        backgroundColor: 'white'
-    }
-});

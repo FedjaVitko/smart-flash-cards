@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Keyboard } from 'react-native'
 import { Container, Header, Content, Textarea, Form, Text, Card, CardItem, Body, Title, Button } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
@@ -16,6 +16,20 @@ class CreateCardScreen extends Component {
         selectedColor: 'green'
     };
 
+    componentWillMount () {
+      this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+    }
+
+    componentWillUnmount () {
+      this.keyboardDidHideListener.remove();
+    }
+
+    _keyboardDidHide = () => {
+      if (this.state.answer.length > 0) {
+        this.tokenizeAnswer();
+      }
+    }
+
     componentWillReceiveProps(nextProps) {
       let tokenColors = this.state.tokenColors;
       if (!this.state.tokenColors) {
@@ -26,7 +40,7 @@ class CreateCardScreen extends Component {
       }
 
       this.setState({ tokenColors });
-  }
+    }
 
     tokenizeAnswer = () => {
       const stringToTokenize = this.state.answer;
@@ -50,6 +64,10 @@ class CreateCardScreen extends Component {
       this.setState({ tokenColors: newTokenColors });          
     }
 
+    createCard = () => {
+      console.log(this.state.tokenizedAnswer);
+    }
+
     render() {
         return (
           <Container>
@@ -60,22 +78,26 @@ class CreateCardScreen extends Component {
             </Header>
             <Content padder>
               <Form>
+
                 <Textarea
                   rowSpan={5}
                   bordered
                   placeholder="Enter the card's question..."
-                  onChangeText={(question) => {this.setState({question})}}
+                  onChangeText={(question) => {this.setState({ question })}}
                   value={this.state.question}
                 />
+
                 <Textarea
                   rowSpan={5}
                   bordered
                   placeholder="Enter the card's answer..."
-                  onChangeText={(answer) => { this.setState({answer}) }}
+                  onChangeText={(answer) => { this.setState({ answer }) }}
                   value={this.state.answer}
-                  onBlur={this.tokenizeAnswer}
                 />
+
+                {this.state.answer.length > 0 && 
                 <Card>
+
                   <CardItem>
                     <Body>
                       <Text>
@@ -88,29 +110,36 @@ class CreateCardScreen extends Component {
                       </Text>
                     </Body>
                   </CardItem>
+
                   <CardItem footer bordered>
                     <Grid>
                       <Col>
                         <Row>
-                          <Button rounded onPress={() => this.setState({ selectedColor: 'white' })} style={{ width: '50%' }}>
+                          <Button rounded onPress={() => this.setState({ selectedColor: 'white' })} style={styles.button}>
                             <Text style={styles.buttonText}>Not Important</Text>
                           </Button>
-                          <Button rounded success onPress={() => this.setState({ selectedColor: 'green' })} style={{ width: '50%' }}>
+                          <Button rounded success onPress={() => this.setState({ selectedColor: 'green' })} style={styles.button}>
                             <Text style={styles.buttonText}>Less Important</Text>
                           </Button>
                         </Row>
                         <Row>
-                          <Button rounded warning onPress={() => this.setState({ selectedColor: 'orange' })} style={{ width: '50%' }}>
+                          <Button rounded warning onPress={() => this.setState({ selectedColor: 'orange' })} style={styles.button}>
                             <Text style={styles.buttonText}>Important</Text>
                           </Button>
-                          <Button rounded danger onPress={() => this.setState({ selectedColor: 'red' })} style={{ width: '50%' }}>
+                          <Button rounded danger onPress={() => this.setState({ selectedColor: 'red' })} style={styles.button}>
                             <Text style={styles.buttonText}>Very Important</Text>
                           </Button>
                         </Row>
                       </Col>
                     </Grid>
                   </CardItem>
-                </Card>
+
+                </Card>}
+
+                <Button rounded success onPress={this.createCard} style={styles.createButton}>
+                  <Text>Create Card</Text>
+                </Button>
+                
               </Form>
             </Content>
           </Container>
@@ -125,8 +154,17 @@ const styles = StyleSheet.create({
     height: 44 + getStatusBarHeight(),
     backgroundColor: 'orange',
   },
+  button: {
+    width: '50%',
+    justifyContent: 'center'
+  },
   buttonText: {
     fontSize: 10,
     textAlign: 'center'
+  },
+  createButton: {
+    width: '100%',
+    justifyContent: 'center',
+    marginTop: 20
   }
 })

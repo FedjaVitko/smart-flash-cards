@@ -2,8 +2,12 @@ import React from 'react';
 import { createBottomTabNavigator } from 'react-navigation';
 import { AppLoading } from 'expo';
 
-import CreateCardScreen from './screens/CreateCardScreen';
-import DeckScreen from './screens/DeckScreen';
+import {
+  CreateCardScreen,
+  CreateDeckScreen,
+  DeckScreen,
+  DeckListScreen 
+} from './screens';
 
 class App extends React.Component {
 
@@ -22,12 +26,14 @@ class App extends React.Component {
   render() {
 
     if (this.state.loading) {
-      return <Expo.AppLoading />
+      return <AppLoading />
     }
 
     const MainNavigator = createBottomTabNavigator({
       createCard: CreateCardScreen,
-      deck: DeckScreen
+      deck: DeckScreen,
+      deckList: DeckListScreen,
+      createDeck: CreateDeckScreen
     })
 
     return (

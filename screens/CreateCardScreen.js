@@ -4,7 +4,7 @@ import { Container, Header, Content, Textarea, Form, Text, Card, CardItem, Body,
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-import TokenizedText from '../components/TokenizedText';
+import { TokenizedText } from '../components';
 
 const colorsToImportance = {
   'white' : 0,
@@ -79,9 +79,20 @@ class CreateCardScreen extends Component {
       const card = {
         question,
         answer,
-        tokenizedAnswer
+        tokenizedAnswerJson: JSON.stringify(tokenizedAnswer),
+        deckId: "5b98a24c096b9b273aac71b9"
       };
-      // TODO: Send the card object via a POST request to the REST API
+
+      fetch('https://smart-flash-cards-api.herokuapp.com/cards', {
+        method: 'POST',
+        headers: {
+          'Accept' : 'application/json',
+          'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify(card)
+      })
+        .then(res => res.json())
+        .then(data => console.log(data));
     }
 
     render() {
